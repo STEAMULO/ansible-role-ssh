@@ -1,0 +1,18 @@
+---
+
+galaxy_info:
+  author: hebergement@steamulo.com
+  description: Install a sudoer user with ssh keys and ensure sudo command is present
+  company: Steamulo
+  license: "Apache v2.0"
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - precise
+    - raring
+    - saucy
+    - trusty
+  categories: []
+
+dependencies: []

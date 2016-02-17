@@ -1,0 +1,4 @@
+---
+# defaults file for ssh
+check_sudo_cmd: False
+ssh_users: []

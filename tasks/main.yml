@@ -1,0 +1,41 @@
+---
+  - name: "Verify ssh_account is defined"
+    assert:
+      that: ssh_account is defined
+
+  - name: Ensure sudo command is present
+    become: False
+    become_user: root
+    apt: name=sudo state=present
+    when: check_sudo_cmd is defined and check_sudo_cmd
+
+  - name: Remove root password
+    command: passwd -l root
+
+  - name: Ensure admin and sudo groups are present
+    group: name="{{ item }}" state=present
+    with_items:
+      - admin
+      - sudo
+
+  - name: create a new sudo user for {{ ssh_account }}
+    user:
+      name={{ ssh_account }}
+      state=present
+      groups="sudo,admin"
+      shell=/bin/bash
+      append=yes
+    become: yes
+
+  - name: Sudoers | update sudoers file for {{ ssh_account }} and validate
+    lineinfile:
+      "dest=/etc/sudoers
+      insertafter=EOF
+      line='{{ ssh_account }} ALL=(ALL) NOPASSWD: ALL'
+      regexp='{{ ssh_account }} ALL=\\(ALL\\) NOPASSWD: ALL'
+      state=present"
+    become: yes
+
+  - name: Add ssh user keys for {{ ssh_account }} with {{ ssh_users }}
+    authorized_key: user={{ ssh_account }} key="{{ item.key }}"
+    with_items: ssh_users
