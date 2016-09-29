@@ -1,0 +1,7 @@
+ssh_admin_user: steamulo
+ssh_admin_user_basic_keys:
+  - "ssh-rsa AAAAB3Nzaxxx admin_team_1@toto"
+  - "ssh-rsa AAAAB3Nzbxxx admin_team_2@test"
+ssh_admin_user_extra_keys:
+ - "ssh-rsa AAAAB3Nzcxxx project_admin_1@toto"
+ - "ssh-rsa AAAAB3Nzdxxx project_admin_2@test"

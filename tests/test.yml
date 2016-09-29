@@ -1,0 +1,9 @@
+---
+
+- hosts: vagrant-machine
+  name: Test role for ssh access
+  become: true
+  roles:
+    - ../../ansible-role-ssh
+  vars_files:
+    - test-vars

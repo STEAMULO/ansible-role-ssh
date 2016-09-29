@@ -1,4 +1,10 @@
 ---
 # defaults file for ssh
 check_sudo_cmd: False
-ssh_users: []
+
+# first level of admin keys (don't have to be overriden by project)
+ssh_admin_user_basic_keys: []
+# first level of admin keys (could be overriden by project)
+ssh_admin_user_extra_keys: []
+
+#ssh_admin_user: xxx
