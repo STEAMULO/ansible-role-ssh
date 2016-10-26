@@ -5,8 +5,10 @@
     name: "{{ ssh_standard_user.name }}"
     comment: "{{ ssh_standard_user.comment|default(omit) }}"
     home: "{{ ssh_standard_user.home | default('/home/'+ ssh_standard_user.name) }}"
+    groups: "{{ ssh_sudo_user.name }}"
     shell: "/bin/bash"
     state: "present"
+    append: yes
 
 - debug: msg="{{ ssh_standard_user.name }} -> {{ item }}" verbosity=2
   with_items:

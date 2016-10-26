@@ -5,7 +5,7 @@
     name: "{{ ssh_sudo_user.name }}"
     comment: "{{ ssh_sudo_user.comment|default(omit) }}"
     home: "{{ ssh_sudo_user.home | default('/home/'+ ssh_sudo_user.name) }}"
-    groups: "sudo,admin"
+    groups: "{{ ssh_sudo_user.name }},sudo,admin"
     shell: "/bin/bash"
     state: "present"
     append: yes
