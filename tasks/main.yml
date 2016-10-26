@@ -17,8 +17,9 @@
 
   - include: protect-user-history.yml
     with_items:
-      - "{{ ssh_sudo_users | rejectattr('no_history_protect', 'sameas', true) | map(attribute='name') | list }}"
-      - "{{ ssh_standard_users | rejectattr('no_history_protect', 'sameas', true) | map(attribute='name') | list }}"
+      - "{{ ssh_sudo_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
+      - "{{ ssh_standard_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
+      - [{ 'name': 'root', 'home': '/root' }]
     loop_control:
       loop_var: "ssh_user"
     tags: "protect-users-history"

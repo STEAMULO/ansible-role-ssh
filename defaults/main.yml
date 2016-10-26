@@ -9,6 +9,8 @@ ssh_users_to_remove: []
 user_protected_files:
   - ".bash_history"
   - ".bash_login"
-  - ".profile"
   - ".bash_logout"
-  - ".bashrc"
+
+user_histfilesize: 400000000
+user_histsize: 10000
+rsyslog_progname: history_cmd

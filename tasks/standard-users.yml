@@ -4,6 +4,7 @@
   user:
     name: "{{ ssh_standard_user.name }}"
     comment: "{{ ssh_standard_user.comment|default(omit) }}"
+    home: "{{ ssh_standard_user.home | default('/home/'+ ssh_standard_user.name) }}"
     shell: "/bin/bash"
     state: "present"
 
