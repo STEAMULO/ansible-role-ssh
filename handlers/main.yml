@@ -1,7 +1,10 @@
 ---
 
-  - name: restart ssh
-    service: name=ssh state=restarted
+- name: restart ssh
+  service: name=ssh state=restarted
 
-  - name: reload ssh
-    service: name=ssh state=reloaded
+- name: reload ssh
+  service: name=ssh state=reloaded
+
+- name: rsyslog restart
+  service: name=rsyslog state=restarted

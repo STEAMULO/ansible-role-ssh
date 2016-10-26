@@ -1,0 +1,25 @@
+---
+
+- name: Touch all user '{{ ssh_user.name }}' .bash* files
+  file: path="{{ ssh_user.home | default('/home/'+ ssh_user.name) }}/{{ item }}" state="touch" owner="{{ ssh_user.name }}" group="{{ ssh_user.name }}"
+  with_items:
+    - "{{ user_protected_files }}"
+- name: Ensure log actions files aren't changeable by the user '{{ ssh_user.name }}'
+  shell: chattr +a {{ ssh_user.home | default('/home/'+ ssh_user.name) }}/{{ item }}
+  with_items:
+    - "{{ user_protected_files }}"
+
+- name: Copy '{{ ssh_user.name }}' profile files
+  template: src="{{ item }}.j2" dest="{{ ssh_user.home | default('/home/'+ ssh_user.name) }}/{{ item }}" owner=root group=root
+  with_items:
+    - ".bashrc"
+    - ".profile"
+    - ".bash_profile"
+
+- name: Activate history logs to custom file in syslog
+  copy:
+    content: |
+      if $programname == '{{ rsyslog_progname }}' then /var/log/{{ rsyslog_progname }}.log
+      & stop
+    dest: "/etc/rsyslog.d/{{ rsyslog_progname }}.conf"
+  notify: rsyslog restart

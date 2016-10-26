@@ -1,63 +1,32 @@
 ---
-  - name: "Verify ssh_admin_user is defined"
-    assert:
-      that: ssh_admin_user is defined
 
+  - include: sudo-root-config.yml
+    tags : "sudo-root-config"
 
-##### sudo and root config
+  - include: sudo-user.yml
+    with_items: "{{ ssh_sudo_users|default([]) }}"
+    loop_control:
+      loop_var: "ssh_sudo_user"
+    tags: "sudo-users"
 
-  - name: Ensure sudo command is present and should be installed (check_sudo_cmd={{ check_sudo_cmd }})
-    apt: name=sudo state=present
-    when: check_sudo_cmd is defined and check_sudo_cmd
+  - include: standard-users.yml
+    with_items: "{{ ssh_standard_users|default([]) }}"
+    loop_control:
+      loop_var: "ssh_standard_user"
+    tags: "standard-users"
 
-  - name: Remove root password
-    command: passwd -l root
-    become: yes
-
-  - name: Disallow password authentication
-    lineinfile:
-      dest: /etc/ssh/sshd_config
-      regexp: "^PasswordAuthentication"
-      line: "PasswordAuthentication no"
-      state: present
-    notify: reload ssh
-
-  - name: Disallow root SSH access
-    lineinfile:
-      dest: /etc/ssh/sshd_config
-      regexp: "^PermitRootLogin"
-      line: "PermitRootLogin no"
-      state: present
-    notify: reload ssh
-
-  - name: Ensure admin and sudo groups are present
-    group: name="{{ item }}" state=present
+  - include: protect-user-history.yml
     with_items:
-      - admin
-      - sudo
-    become: yes
+      - "{{ ssh_sudo_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
+      - "{{ ssh_standard_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
+      - [{ 'name': 'root', 'home': '/root' }]
+    loop_control:
+      loop_var: "ssh_user"
+    tags: "protect-users-history"
 
-
-##### ssh_admin_user config
-
-  - name: create a new sudo user {{ ssh_admin_user }}
-    user:
-      name={{ ssh_admin_user }}
-      state=present
-      groups="sudo,admin"
-      shell=/bin/bash
-      append=yes
-    become: yes
-
-  - name: Sudoers | update sudoers file for {{ ssh_admin_user }} and validate
-    lineinfile:
-      "dest=/etc/sudoers
-      insertafter=EOF
-      line='{{ ssh_admin_user }} ALL=(ALL) NOPASSWD: ALL'
-      regexp='{{ ssh_admin_user }} ALL=\\(ALL\\) NOPASSWD: ALL'
-      state=present"
-    become: yes
-
-  - name: Add ssh user keys for {{ ssh_admin_user }} with {{ ssh_admin_user_keys }}
-    authorized_key: user={{ ssh_admin_user }} key="{{ ssh_admin_user_basic_keys | union(ssh_admin_user_extra_keys) | join('\n') }}" exclusive=true
-    become: yes
+  - include: remove-old-user.yml
+    with_items:
+      - "{{ ssh_users_to_remove | map(attribute='name') | list }}"
+    loop_control:
+      loop_var: "ssh_user"
+    tags: "remove-old-users"

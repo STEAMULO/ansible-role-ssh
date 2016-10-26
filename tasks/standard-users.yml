@@ -1,0 +1,15 @@
+---
+
+- name: Create standard non sudo user '{{ ssh_standard_user }}'
+  user:
+    name: "{{ ssh_standard_user.name }}"
+    comment: "{{ ssh_standard_user.comment|default(omit) }}"
+    home: "{{ ssh_standard_user.home | default('/home/'+ ssh_standard_user.name) }}"
+    shell: "/bin/bash"
+    state: "present"
+
+- debug: msg="{{ ssh_standard_user.name }} -> {{ item }}" verbosity=2
+  with_items:
+    - "{{ ssh_standard_user.authorized }}"
+- name: Ensure authorized_keys are present for '{{ ssh_standard_user }}'
+  authorized_key: user="{{ ssh_standard_user.name }}" key="{{ ssh_standard_user.authorized | join('\n') }}" state="present" manage_dir="yes" exclusive="yes"
