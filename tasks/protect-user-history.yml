@@ -1,0 +1,13 @@
+---
+
+- name: Touch all user '{{ ssh_user }}' .bash* files
+  file: path="/home/{{ ssh_user }}/{{ item }}" state="touch" owner="{{ ssh_user }}" group="{{ ssh_user }}"
+  with_items:
+    - "{{ user_protected_files }}"
+- name: Ensure log actions files aren't changeable by the user '{{ ssh_user }}'
+  shell: chattr +a /home/{{ ssh_user }}/{{ item }}
+  with_items:
+    - "{{ user_protected_files }}"
+
+- name: Copy '{{ ssh_user }}' bash_profile
+  copy: src="files/bash_profile" dest="/home/{{ ssh_user }}/.bash_profile" owner=root group=root

@@ -2,9 +2,13 @@
 # defaults file for ssh
 check_sudo_cmd: False
 
-# first level of admin keys (don't have to be overriden by project)
-ssh_admin_user_basic_keys: []
-# first level of admin keys (could be overriden by project)
-ssh_admin_user_extra_keys: []
+ssh_sudo_users: []
+ssh_standard_users: []
+ssh_users_to_remove: []
 
-#ssh_admin_user: xxx
+user_protected_files:
+  - ".bash_history"
+  - ".bash_login"
+  - ".profile"
+  - ".bash_logout"
+  - ".bashrc"

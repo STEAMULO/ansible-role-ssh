@@ -5,3 +5,29 @@ ssh_admin_user_basic_keys:
 ssh_admin_user_extra_keys:
  - "ssh-rsa AAAAB3Nzcxxx project_admin_1@toto"
  - "ssh-rsa AAAAB3Nzdxxx project_admin_2@test"
+ - "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAt9kkT0NRsJuV1t2d+WpQcqG+zj72MhTqx9kw1BMF82tLC8g2qHQZ4RyudMtcpWGpTDzxO6LTePkcxCYKl/04LEwea5b2eZKdpnNp1H+/fsBTOwzILGWGSmqabwm+/FT3bgU1ZHguAD6yq1HS1NTIK8TIqB3zPwpbNgRoG7VUMaiiy96mAtuZ9zdjtgcblAdvLi2MNZaMsRyR5Ago4i2tJXnt8sy4hDj+jvyeZlOsNaA5uWsMnAix37H2jGXkvWbusw7ySFipdCsdr0ugC7OwJSApRJ4/Cd6jTJdVOoVcTMNYnGwuIu5C2cafL2E+2hp2s4P7epx9nCgiLZ7y06BNbQ=="
+
+
+ssh_sudo_users:
+  - name: "{{ ssh_admin_user }}"
+    authorized: "{{ ssh_admin_user_basic_keys | union(ssh_admin_user_extra_keys) }}"
+    no_history_protect: false
+
+ssh_users_to_remove:
+  - name: test
+  - name: test1
+    comment: "Toto 2"
+    authorized:
+      - "ssh-rsa AAAAB3Nza="
+
+ssh_standard_users:
+  - name: toto
+    comment: "Toto 1"
+    authorized:
+      - "ssh-rsa AAAAB3Nzdxxx project_admin_2@test"
+      - "ssh-rsa AAAAB3NzaC1yc2E="
+  - name: test1
+    comment: "Toto 2"
+    authorized:
+      - "ssh-rsa AAQ=="
+    no_history_protect: true

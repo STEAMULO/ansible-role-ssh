@@ -1,0 +1,32 @@
+---
+
+- name: Ensure sudo command is present and should be installed (check_sudo_cmd={{ check_sudo_cmd }})
+  apt: name=sudo state=present
+  when: check_sudo_cmd is defined and check_sudo_cmd
+
+- name: Remove root password
+  command: passwd -l root
+  become: yes
+
+- name: Disallow password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify: reload ssh
+
+- name: Disallow root SSH access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: reload ssh
+
+- name: Ensure admin and sudo groups are present
+  group: name="{{ item }}" state=present
+  with_items:
+    - admin
+    - sudo
+  become: yes

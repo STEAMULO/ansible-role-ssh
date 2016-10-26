@@ -1,0 +1,8 @@
+---
+
+- name: Reset user_protected_files chattr for '{{ ssh_user }}'
+  shell: "[ ! -f /home/{{ ssh_user }}/{{ item }} ] || chattr -a /home/{{ ssh_user }}/{{ item }}"
+  with_items:
+    - "{{ user_protected_files }}"
+- name: Remove old user '{{ ssh_user }}'
+  user: name="{{ ssh_user }}" state="absent" remove="yes"

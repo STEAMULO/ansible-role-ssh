@@ -1,0 +1,24 @@
+---
+
+- name: create a new sudo user '{{ ssh_sudo_user.name }}'
+  user:
+    name: "{{ ssh_sudo_user.name }}"
+    comment: "{{ ssh_sudo_user.comment|default(omit) }}"
+    groups: "sudo,admin"
+    shell: "/bin/bash"
+    state: "present"
+    append: yes
+
+- name: Sudoers | update sudoers file for '{{ ssh_sudo_user.name }}' and validate
+  lineinfile:
+    "dest=/etc/sudoers
+    insertafter=EOF
+    line='{{ ssh_sudo_user.name }} ALL=(ALL) NOPASSWD: ALL'
+    regexp='{{ ssh_sudo_user.name }} ALL=\\(ALL\\) NOPASSWD: ALL'
+    state=present"
+
+- debug: msg="{{ ssh_sudo_user.name }} -> {{ item }}" verbosity=2
+  with_items:
+    - "{{ ssh_sudo_user.authorized }}"
+- name: Ensure authorized_keys are present for '{{ ssh_sudo_user.name }}'
+  authorized_key: user="{{ ssh_sudo_user.name }}" key="{{ ssh_sudo_user.authorized | join('\n') }}" state="present" manage_dir="yes" exclusive="yes"

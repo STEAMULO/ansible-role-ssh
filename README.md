@@ -17,11 +17,24 @@ Role Variables
 
 - doit-on vérifier la présence de la commande sudo ? (dans ce cas le user de lancement doit pouvoir passer root)
     check_sudo_cmd: False
-- nom du compte sudoer sur lequel ajouter des clefs d'accès (obligatoire)
-    ssh_admin_user: xxx
-- liste des clefs ssh publiques à ajouter sur le compte sudoer
-    ssh_admin_user_keys:
-        - "ssh-rsa AAAABBBBBCCCCCCCCCC"
+- liste des comptes sudoer à ajouter :
+        ssh_sudo_users:
+            - name: xxxx # nom du compte
+              authorized: # liste des clefs autorisées
+                - "ssh-rsa AAA"
+              comment: "xxxx" # commentaire lié au compte
+              no_history_protect: true # ne pas proteger l'history de ce user
+- liste des comptes non sudoer à ajouter :
+
+        ssh_standard_users:
+          - name: toto
+            comment: "Toto"
+            authorized:
+              - "ssh-rsa key 1"
+              - "ssh-rsa key 2"
+- liste des comptes à supprimer :
+        ssh_users_to_remove:
+          - name: old_toto
 
 Dependencies
 ------------
@@ -34,9 +47,20 @@ Example Playbook
 
     - hosts: all
       vars:
-        - ssh_admin_user: xxxx
-        - ssh_admin_user_keys:
-          - "ssh-rsa AAA"
+        ssh_sudo_users:
+            - name: xxxx
+              authorized:
+                - "ssh-rsa AAA"
+              comment: "xxxx"
+              no_history_protect: true
+        ssh_users_to_remove:
+          - name: old_toto
+        ssh_standard_users:
+          - name: toto
+            comment: "Toto"
+            authorized:
+              - "ssh-rsa key 1"
+              - "ssh-rsa key 2"
       roles:
         - { role: steamroles/ssh }
 
