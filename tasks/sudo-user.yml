@@ -1,5 +1,8 @@
 ---
 
+- name: Create '{{ ssh_sudo_user.name }}' group
+  group: name="{{ ssh_sudo_user.name }}" state=present
+
 - name: create a new sudo user '{{ ssh_sudo_user.name }}'
   user:
     name: "{{ ssh_sudo_user.name }}"
