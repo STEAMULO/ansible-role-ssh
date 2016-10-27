@@ -35,6 +35,10 @@ Role Variables
 - liste des comptes à supprimer :
         ssh_users_to_remove:
           - name: old_toto
+- liste des comptes autres sur lesquels appliquer la sécurisation de l'historique et du bashrc/bash_profile :
+        ssh_extra_user_to_protect:
+          - name: tot2
+            home: /toto2
 
 Dependencies
 ------------

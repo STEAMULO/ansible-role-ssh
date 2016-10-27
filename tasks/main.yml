@@ -20,6 +20,7 @@
       - "{{ ssh_sudo_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
       - "{{ ssh_standard_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
       - [{ 'name': 'root', 'home': '/root' }]
+      - "{{ ssh_extra_user_to_protect }}"
     loop_control:
       loop_var: "ssh_user"
     tags: "protect-users-history"

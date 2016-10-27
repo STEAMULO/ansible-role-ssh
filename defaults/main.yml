@@ -5,6 +5,7 @@ check_sudo_cmd: False
 ssh_sudo_users: []
 ssh_standard_users: []
 ssh_users_to_remove: []
+ssh_extra_user_to_protect: []
 
 user_protected_files:
   - ".bash_history"
@@ -13,4 +14,5 @@ user_protected_files:
 
 user_histfilesize: 400000000
 user_histsize: 10000
+ssh_no_rsyslog: false
 rsyslog_progname: history_cmd

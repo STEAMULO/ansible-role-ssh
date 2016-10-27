@@ -21,7 +21,7 @@ export HISTSIZE={{ ssh_user.histsize | default(user_histsize) }}
 export HISTTIMEFORMAT="%d/%m/%y %T "
 
 # ensure only append lines to history
-{% if ssh_user.no_syslog is defined and ssh_user.no_syslog %}
+{% if ssh_no_rsyslog or (ssh_user.no_syslog is defined and ssh_user.no_syslog) %}
 PROMPT_COMMAND='history -a;history -n'
 {% else %}
 # and log into syslog
