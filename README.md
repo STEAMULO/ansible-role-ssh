@@ -32,6 +32,9 @@ Role Variables
             authorized:
               - "ssh-rsa key 1"
               - "ssh-rsa key 2"
+            group: maingroup
+            groups: othergroup,otherothergroup
+            createhome: true
 - liste des comptes à supprimer :
         ssh_users_to_remove:
           - name: old_toto

@@ -1,14 +1,19 @@
 ---
 
-- name: Create '{{ ssh_standard_user.name }}' group
-  group: name="{{ ssh_standard_user.name }}" state=present
+- name: Create '{{ ssh_standard_user.name }}' groups
+  group: name="{{ item }}" state=present
+  with_items:
+    - "{{ ssh_standard_user.group | default(ssh_standard_user.name) }}"
+    - "{{ ssh_standard_user.groups | default([]) }}"
 
 - name: Create standard non sudo user '{{ ssh_standard_user }}'
   user:
     name: "{{ ssh_standard_user.name }}"
     comment: "{{ ssh_standard_user.comment|default(omit) }}"
     home: "{{ ssh_standard_user.home | default('/home/'+ ssh_standard_user.name) }}"
-    groups: "{{ ssh_standard_user.name }}"
+    createhome: "{{ ssh_standard_user.createhome | default(true) }}"
+    group: "{{ ssh_standard_user.group | default(ssh_standard_user.name) }}"
+    groups: "{{ ssh_standard_user.groups | default([]) | join(',') }}"
     shell: "/bin/bash"
     state: "present"
     append: yes

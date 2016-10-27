@@ -1,14 +1,19 @@
 ---
 
-- name: Create '{{ ssh_sudo_user.name }}' group
-  group: name="{{ ssh_sudo_user.name }}" state=present
+- name: Create '{{ ssh_sudo_user.name }}' groups
+  group: name="{{ item }}" state=present
+  with_items:
+    - "{{ ssh_sudo_user.group | default(ssh_sudo_user.name) }}"
+    - "{{ ssh_sudo_user.groups | default([]) }}"
 
 - name: create a new sudo user '{{ ssh_sudo_user.name }}'
   user:
     name: "{{ ssh_sudo_user.name }}"
     comment: "{{ ssh_sudo_user.comment|default(omit) }}"
     home: "{{ ssh_sudo_user.home | default('/home/'+ ssh_sudo_user.name) }}"
-    groups: "{{ ssh_sudo_user.name }},sudo,admin"
+    createhome: "{{ ssh_sudo_user.createhome | default(true) }}"
+    group: "{{ ssh_sudo_user.group | default(ssh_sudo_user.name) }}"
+    groups: "{{ ssh_sudo_user.groups | default([]) | union(['sudo','admin']) | join(',') }}"
     shell: "/bin/bash"
     state: "present"
     append: yes
