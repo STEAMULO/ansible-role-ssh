@@ -22,6 +22,7 @@ Role Variables
             - name: xxxx # nom du compte
               authorized: # liste des clefs autorisées
                 - "ssh-rsa AAA"
+              password: motdepasseCrypté  # mot de passe crypté manuellement en sha512 ( commande terminal : mkpasswd --method="SHA-512" )
               comment: "xxxx" # commentaire lié au compte
               no_history_protect: true # ne pas proteger l'history de ce user
 - liste des comptes non sudoer à ajouter :
@@ -58,6 +59,7 @@ Example Playbook
             - name: xxxx
               authorized:
                 - "ssh-rsa AAA"
+	      password: cryptedPassword
               comment: "xxxx"
               no_history_protect: true
         ssh_users_to_remove:

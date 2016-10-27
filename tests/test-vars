@@ -1,4 +1,5 @@
 ssh_admin_user: steamulo
+ssh_admin_user_password: $6$NfLeRQvrQ8Y3$VaD6B4.op99TqM1ToC4JtGPi9biBzsWaCh4.2dbsLLVl/v.jTmdgsx3X39nw9pEHI/5YLjPNC6XUGozhLrL5J1 
 ssh_admin_user_basic_keys:
   - "ssh-rsa AAAAB3Nzaxxx admin_team_1@toto"
   - "ssh-rsa AAAAB3Nzbxxx admin_team_2@test"
@@ -10,8 +11,9 @@ ssh_admin_user_extra_keys:
 
 ssh_sudo_users:
   - name: "{{ ssh_admin_user }}"
-    authorized: "{{ ssh_admin_user_basic_keys | union(ssh_admin_user_extra_keys) }}"
+    authorized: "{{ ssh_admin_user_basic_keys | union(ssh_admin_user_extra_keys) }}" 
     no_history_protect: false
+    password: "{{ ssh_admin_user_password }}"
 
 ssh_users_to_remove:
   - name: test
