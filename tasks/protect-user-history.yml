@@ -1,9 +1,11 @@
 ---
 
 - name: Touch all user '{{ ssh_user.name }}' .bash* files
-  file: path="{{ ssh_user.home | default('/home/'+ ssh_user.name) }}/{{ item }}" state="touch" owner="{{ ssh_user.name }}" group="{{ ssh_user.group | default(ssh_user.name) }}"
+  file: path="{{ ssh_user.home | default('/home/'+ ssh_user.name) }}/{{ item }}" state="touch" owner="{{ ssh_user.name }}" group="{{ ssh_user.group | default(ssh_user.name) }}"
+  changed_when: "touch_result.diff.before.state != 'file'"
   with_items:
     - "{{ user_protected_files }}"
+  register: touch_result
 - name: Ensure log actions files aren't changeable by the user '{{ ssh_user.name }}'
   shell: chattr +a {{ ssh_user.home | default('/home/'+ ssh_user.name) }}/{{ item }}
   with_items:
