@@ -30,6 +30,7 @@ Role Variables
         ssh_standard_users:
           - name: toto
             comment: "Toto"
+            password: motdepasseCrypté  # mot de passe crypté manuellement en sha512 ( commande terminal : mkpasswd --method="SHA-512" )
             authorized:
               - "ssh-rsa key 1"
               - "ssh-rsa key 2"
