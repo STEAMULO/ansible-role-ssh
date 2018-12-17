@@ -16,3 +16,5 @@ user_histfilesize: 400000000
 user_histsize: 10000
 ssh_no_rsyslog: false
 rsyslog_progname: history_cmd
+
+ssh_disallow_password_auth: True

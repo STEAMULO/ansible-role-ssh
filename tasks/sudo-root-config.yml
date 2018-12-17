@@ -15,6 +15,7 @@
     line: "PasswordAuthentication no"
     state: present
   notify: reload ssh
+  when: ssh_disallow_password_auth
 
 - name: Disallow root SSH access
   lineinfile:
