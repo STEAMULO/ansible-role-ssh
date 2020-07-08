@@ -3,24 +3,24 @@
 - name: Create '{{ ssh_standard_user.name }}' groups
   group: name="{{ item }}" state=present
   with_items:
-    - "{{ ssh_standard_user.group | default(ssh_standard_user.name) }}"
-    - "{{ ssh_standard_user.groups | default([]) }}"
+    - "{{ ssh_standard_user.group | default(ssh_standard_user.name) }}"
+    - "{{ ssh_standard_user.groups | default([]) }}"
 
-- name: Create standard non sudo user '{{ ssh_standard_user }}'
+- name: Create standard non sudo user '{{ ssh_standard_user }}'
   user:
     name: "{{ ssh_standard_user.name }}"
     password: "{{ ssh_standard_user.password | default(omit) }}"
-    comment: "{{ ssh_standard_user.comment|default(omit) }}"
+    comment: "{{ ssh_standard_user.comment|default(omit) }}"
     home: "{{ ssh_standard_user.home | default('/home/'+ ssh_standard_user.name) }}"
     createhome: "{{ ssh_standard_user.createhome | default(true) }}"
-    group: "{{ ssh_standard_user.group | default(ssh_standard_user.name) }}"
-    groups: "{{ ssh_standard_user.groups | default([]) | join(',') }}"
+    group: "{{ ssh_standard_user.group | default(ssh_standard_user.name) }}"
+    groups: "{{ ssh_standard_user.groups | default([]) | join(',') }}"
     shell: "/bin/bash"
     state: "present"
     append: yes
 
 - debug: msg="{{ ssh_standard_user.name }} -> {{ item }}" verbosity=2
   with_items:
-    - "{{ ssh_standard_user.authorized }}"
-- name: Ensure authorized_keys are present for '{{ ssh_standard_user }}'
+    - "{{ ssh_standard_user.authorized }}"
+- name: Ensure authorized_keys are present for '{{ ssh_standard_user }}'
   authorized_key: user="{{ ssh_standard_user.name }}" key="{{ ssh_standard_user.authorized | join('\n') }}" state="present" manage_dir="yes" exclusive="yes"

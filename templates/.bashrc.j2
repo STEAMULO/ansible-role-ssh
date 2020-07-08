@@ -25,7 +25,7 @@ export HISTTIMEFORMAT="%d/%m/%y %T "
 PROMPT_COMMAND='history -a;history -n'
 {% else %}
 # and log into syslog
-PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t "{{ rsyslog_progname }}[user=$USER|pwd=$PWD] $SSH_CONNECTION");history -n'
+PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t "{{ rsyslog_progname }}[user=$USER|pwd=$PWD] $SSH_CONNECTION");history -n'
 {% endif %}
 
 # readonly on all HISTORY env vars

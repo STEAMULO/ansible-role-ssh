@@ -1,33 +1,33 @@
 ---
 
-  - include: sudo-root-config.yml
-    tags : "sudo-root-config"
+- include: sudo-user.yml
+  with_items: "{{ ssh_sudo_users|default([]) }}"
+  loop_control:
+    loop_var: "ssh_sudo_user"
+  tags: "sudo-users"
 
-  - include: sudo-user.yml
-    with_items: "{{ ssh_sudo_users|default([]) }}"
-    loop_control:
-      loop_var: "ssh_sudo_user"
-    tags: "sudo-users"
+- include: standard-users.yml
+  with_items: "{{ ssh_standard_users|default([]) }}"
+  loop_control:
+    loop_var: "ssh_standard_user"
+  tags: "standard-users"
 
-  - include: standard-users.yml
-    with_items: "{{ ssh_standard_users|default([]) }}"
-    loop_control:
-      loop_var: "ssh_standard_user"
-    tags: "standard-users"
+- include: protect-user-history.yml
+  with_items:
+    - "{{ ssh_sudo_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
+    - "{{ ssh_standard_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
+    - [{ 'name': 'root', 'home': '/root' }]
+    - "{{ ssh_extra_user_to_protect }}"
+  loop_control:
+    loop_var: "ssh_user"
+  tags: "protect-users-history"
 
-  - include: protect-user-history.yml
-    with_items:
-      - "{{ ssh_sudo_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
-      - "{{ ssh_standard_users | rejectattr('no_history_protect', 'sameas', true) | list }}"
-      - [{ 'name': 'root', 'home': '/root' }]
-      - "{{ ssh_extra_user_to_protect }}"
-    loop_control:
-      loop_var: "ssh_user"
-    tags: "protect-users-history"
+- include: remove-old-user.yml
+  with_items:
+    - "{{ ssh_users_to_remove | map(attribute='name') | list }}"
+  loop_control:
+    loop_var: "ssh_user"
+  tags: "remove-old-users"
 
-  - include: remove-old-user.yml
-    with_items:
-      - "{{ ssh_users_to_remove | map(attribute='name') | list }}"
-    loop_control:
-      loop_var: "ssh_user"
-    tags: "remove-old-users"
+- include: sudo-root-config.yml
+  tags : "sudo-root-config"

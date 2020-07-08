@@ -3,18 +3,18 @@
 - name: Create '{{ ssh_sudo_user.name }}' groups
   group: name="{{ item }}" state=present
   with_items:
-    - "{{ ssh_sudo_user.group | default(ssh_sudo_user.name) }}"
-    - "{{ ssh_sudo_user.groups | default([]) }}"
+    - "{{ ssh_sudo_user.group | default(ssh_sudo_user.name) }}"
+    - "{{ ssh_sudo_user.groups | default([]) }}"
 
 - name: create a new sudo user '{{ ssh_sudo_user.name }}'
   user:
     name: "{{ ssh_sudo_user.name }}"
     password: "{{ ssh_sudo_user.password | default(omit) }}" 
-    comment: "{{ ssh_sudo_user.comment|default(omit) }}"
+    comment: "{{ ssh_sudo_user.comment|default(omit) }}"
     home: "{{ ssh_sudo_user.home | default('/home/'+ ssh_sudo_user.name) }}"
     createhome: "{{ ssh_sudo_user.createhome | default(true) }}"
-    group: "{{ ssh_sudo_user.group | default(ssh_sudo_user.name) }}"
-    groups: "{{ ssh_sudo_user.groups | default([]) | union(['sudo','admin']) | join(',') }}"
+    group: "{{ ssh_sudo_user.group | default(ssh_sudo_user.name) }}"
+    groups: "{{ ssh_sudo_user.groups | default([]) | union(['sudo','admin']) | join(',') }}"
     shell: "/bin/bash"
     state: "present"
     append: yes
@@ -29,6 +29,6 @@
 
 - debug: msg="{{ ssh_sudo_user.name }} -> {{ item }}" verbosity=2
   with_items:
-    - "{{ ssh_sudo_user.authorized }}"
+    - "{{ ssh_sudo_user.authorized }}"
 - name: Ensure authorized_keys are present for '{{ ssh_sudo_user.name }}'
   authorized_key: user="{{ ssh_sudo_user.name }}" key="{{ ssh_sudo_user.authorized | join('\n') }}" state="present" manage_dir="yes" exclusive="yes"
